@@ -3,15 +3,32 @@ extends KinematicBody2D
 export var speed = 200
 
 var velocity = Vector2()
-var target: Vector2 = position
 
-func _input(event):
-	if event.is_action_pressed("click"):
-		target = get_global_mouse_position()
-		print('target pos %s' % target)
+func get_input():
+	velocity = Vector2()
+
+	action()
+
+	if Input.is_action_pressed("ui_down"):
+		velocity.y += 1
+	if Input.is_action_pressed("ui_up"):
+		velocity.y -= 1
+	if Input.is_action_pressed("ui_right"):
+		velocity.x += 1
+	if Input.is_action_pressed("ui_left"):
+		velocity.x -= 1
+
+	velocity = velocity.normalized() * speed
+
+
+func action():
+	if Input.is_action_just_pressed("action"):
+		print('action')
+
+
+
+
 
 func _physics_process(_delta):
-	velocity = position.direction_to(target) * speed
-	# look_at(target)
-	if position.distance_to(target) > 5:
-		position = move_and_slide(target)
+	get_input()
+	velocity = move_and_slide(velocity)
